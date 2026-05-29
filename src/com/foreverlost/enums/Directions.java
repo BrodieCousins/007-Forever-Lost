@@ -6,3 +6,4 @@ package com.foreverlost.enums;
 public enum Directions {
     NORTH, SOUTH, EAST, WEST;
 }
+

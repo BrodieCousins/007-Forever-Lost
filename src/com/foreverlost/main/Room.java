@@ -12,7 +12,7 @@ public abstract class Room {
     private final HashSet<Directions> exits = new HashSet<>();
 
     public Room(Directions[] directions) {
-        exits.addAll(Arrays.asList(directions));
+        exits.addAll(Arrays.asList(directions)); // Add all valid directions to exits
     }
     /**
      * Checks if the player meets the requirements to enter the room

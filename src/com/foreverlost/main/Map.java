@@ -36,6 +36,7 @@ public class Map {
      * @return A HashMap mapping the valid directions to the adjacent rooms
      */
     public HashMap<Directions, Room> getAdjacentRooms(Room room, Directions[] validDirections) {
+        // This is going to store the Direction as a Key, to return the Map as a value
         HashMap<Directions, Room> adjacentRooms = new HashMap<>();
 
         int[] index = getIndexByRoom(room);
@@ -49,12 +50,15 @@ public class Map {
                     adjacentRooms.put(direction, this.map[row - 1][column]);
                     break;
                 case EAST:
+                    // add the room RIGHT of this room
                     adjacentRooms.put(direction, this.map[row][column + 1]);
                     break;
                 case SOUTH:
+                    // add the room BELOW this room
                     adjacentRooms.put(direction, this.map[row + 1][column]);
                     break;
                 case WEST:
+                    // add the room LEFT of this room
                     adjacentRooms.put(direction, this.map[row][column - 1]);
                     break;
             }
