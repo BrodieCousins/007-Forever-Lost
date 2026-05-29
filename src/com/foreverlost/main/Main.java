@@ -1,3 +1,10 @@
+package com.foreverlost.main;
+
+import com.foreverlost.enums.Directions;
+import com.foreverlost.util.Animations;
+
+import java.util.HashMap;
+
 /**
  * Entrypoint to the game
  */

@@ -1,3 +1,5 @@
+package com.foreverlost.util;
+
 /**
  * Animation Class
  *
