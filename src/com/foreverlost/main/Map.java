@@ -45,21 +45,24 @@ public class Map {
 
         for (Directions direction : validDirections) {
             switch (direction) {
-                case NORTH:
+                case Directions.NORTH:
                     // add the room ABOVE this room
                     adjacentRooms.put(direction, this.map[row - 1][column]);
                     break;
-                case EAST:
+                case Directions.EAST:
                     // add the room RIGHT of this room
                     adjacentRooms.put(direction, this.map[row][column + 1]);
                     break;
-                case SOUTH:
+                case Directions.SOUTH:
                     // add the room BELOW this room
                     adjacentRooms.put(direction, this.map[row + 1][column]);
                     break;
-                case WEST:
+                case Directions.WEST:
                     // add the room LEFT of this room
                     adjacentRooms.put(direction, this.map[row][column - 1]);
+                    break;
+                default:
+                    System.out.println("NOT A DIRECTION");
                     break;
             }
         }
