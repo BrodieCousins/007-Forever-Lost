@@ -1,7 +1,7 @@
 package com.foreverlost.main;
 
 import com.foreverlost.enums.Directions;
-import com.foreverlost.rooms.LockerRoom;
+import com.foreverlost.rooms.LockerRoomSouth;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -16,16 +16,13 @@ import java.util.HashMap;
  */
 public class Map {
     private Room[][] map;
-    private int[] playerPosition = {0, 0};
 
     public Map() {
         this.newMap();
     }
 
     private void newMap() {
-        this.map = new Room[][]{
-                {new LockerRoom(new Directions[]{Directions.EAST}), new LockerRoom(new Directions[]{Directions.WEST})}
-        };
+        this.map = new Room[][]{};
         System.out.println(Arrays.deepToString(this.map));
     }
 
@@ -102,4 +99,5 @@ public class Map {
 
         return new int[]{row, column};
     }
+
 }
