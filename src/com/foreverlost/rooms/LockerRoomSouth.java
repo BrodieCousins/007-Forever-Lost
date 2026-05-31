@@ -1,8 +1,8 @@
 package com.foreverlost.rooms;
 
 import com.foreverlost.enums.Directions;
-import com.foreverlost.main.Room;
 
+import java.util.HashMap;
 import java.util.Scanner;
 
 /**
@@ -23,11 +23,9 @@ public class LockerRoomSouth extends Room {
     private final String search_description = "You find a scientific lab coat in the ajar locker, for a Patricia. You" +
             "decide to wear this as a disguise, maybe this means you can get through the Scientific Lab unnoticed. You" +
             "also find and pick up a Mug, not sure what this could possibly be used for though";
-    private boolean searched = false;
 
-    public LockerRoomSouth() {
-        Directions[] directions = {Directions.NORTH, Directions.EAST, Directions.WEST};
-        super(directions);
+    public LockerRoomSouth(HashMap<Directions, Room> adjacentRooms) {
+        super(adjacentRooms);
     }
 
     @Override
@@ -38,37 +36,38 @@ public class LockerRoomSouth extends Room {
         System.out.println("(D): Search the room");
 
         // take user input
-        Scanner scanner = new Scanner(System.in);
-        String response = scanner.nextLine();
-        scanner.close();
+        char response = getOptionFromUser();
+        HashMap<Directions, Room> adjacentRooms = getAdjacentRooms();
 
         switch (response) {
-            case "A":
+            case 'A' -> {
                 System.out.println("You go north.");
-                //TODO: Handle navigation
-                break;
-            case "B":
+                adjacentRooms.get(Directions.NORTH).enter();
+            }
+            case 'B' -> {
                 System.out.println("You go east.");
-                //TODO: Handle navigation
-                break;
-            case "C":
+                adjacentRooms.get(Directions.EAST).enter();
+            }
+            case 'C' -> {
                 System.out.println("You go west.");
-                //TODO: Handle navigation
-                break;
-            case "D":
+                adjacentRooms.get(Directions.WEST).enter();
+            }
+            case 'D' -> {
                 search();
-                break;
-            default:
+            }
+            default -> {
                 System.out.println("Invalid option.");
                 startDialogue();
+            }
         }
     }
 
     private void search() {
-        if (!searched) {
+        if (!isSearched()) {
             System.out.println(search_description);
-            searched = true;
+            setSearchedTrue(); // Method inherited by Room class
             //TODO: Add items to inventory
+            startDialogue();
         } else {
             System.out.println("You have already searched this room.");
             startDialogue();

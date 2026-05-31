@@ -1,8 +1,8 @@
 package com.foreverlost.rooms;
 
 import com.foreverlost.enums.Directions;
-import com.foreverlost.main.Room;
-import java.util.HashSet;
+
+import java.util.HashMap;
 import java.util.Scanner;
 
 /**
@@ -16,14 +16,9 @@ public class StartRoom extends Room {
             "emanating from the gap between the floor and the doors. To your right is another pair of the same doors " +
             "yet there is no movement through the window, and no sound emanates from them either. A sign above the " +
             "doors reads 'Locker Room'";
-    private final HashSet<Directions> exits = new HashSet<>();
 
-    /**
-     * When creating this object, it will have two exits, East and North
-     */
-    StartRoom() {
-        Directions[] directions = {Directions.EAST, Directions.NORTH};
-        super(directions);
+    StartRoom(HashMap<Directions, Room> adjacentRooms) {
+        super(adjacentRooms);
     }
 
 
@@ -42,6 +37,11 @@ public class StartRoom extends Room {
         return this.description;
     }
 
+    /**
+     * This is the dialogue that will be displayed when the player enters the room.
+     * It will ask the player what they want to do.
+     * The player can choose to go north to the Scientists Lab, go east through the locker room doors, or search the room.
+     */
     @Override
     protected void startDialogue() {
         System.out.println("Options:\n(A): Go north to the Scientists Lab");
@@ -49,20 +49,24 @@ public class StartRoom extends Room {
         System.out.println("(C): Search the room");
 
         // Gather input
-        Scanner scanner = new Scanner(System.in);
-        String input = scanner.nextLine();
-        scanner.close();
+        char response = getOptionFromUser();
+        HashMap<Directions, Room> adjacentRooms = getAdjacentRooms();
 
-        if (input.equals("A")) {
-            // Enter scientists' lab
-        } else if (input.equals("B")) {
-            // Enter locker room
-        } else if (input.equals("C")) {
-            System.out.println("You search the room and find nothing.");
-            startDialogue(); // Restart the dialogue
-        } else {
-            System.out.println("Invalid option.");
-            startDialogue(); // Restart the dialogue
+        switch (response) {
+            case 'A' -> {
+                adjacentRooms.get(Directions.NORTH).enter();
+            }
+            case 'B' -> {
+                adjacentRooms.get(Directions.EAST).enter();
+            }
+            case 'C' -> {
+                System.out.println("You search the room and find nothing.");
+                startDialogue(); // Restart the dialogue
+            }
+            default -> {
+                System.out.println("Invalid option.");
+                startDialogue(); // Restart the dialogue
+            }
         }
     }
 }

@@ -1,0 +1,77 @@
+package com.foreverlost.rooms;
+
+import com.foreverlost.enums.Directions;
+
+import java.util.HashMap;
+import java.util.Scanner;
+
+/**
+ * This is the Scientists Lab. Directly north to the entrance room, houses all the interactions for this room.
+ * <p>Nothing to search, purely a navigation room. Entering this room without a labcoat will cause Bond to die</p>
+ */
+public class ScientistLab extends Room {
+    private final String name = "Scientists Lab";
+    private final String description = "Upon opening the doors, the bright light and neon white walls blind you " +
+            "momentarily, your eyes adjust quickly and it takes a second for you to take everything in. The room is a " +
+            "giant square with multiple rings of desks surrounding a central table with various science things sitting " +
+            "on it. In front of you the ring of desks is broken to create a path that leads to the centre table and " +
+            "branches off to a set of doors on every side of the room. Around two dozen scientist roam the room, " +
+            "talking to each other. As you walk down the centre path, you scan each door and realise behind the east " +
+            "door you can see the flickering red light of an active camera. A sign next to the west door indicates it " +
+            "leads to the admin office. The north door gives no clues as to where it leads";
+
+    ScientistLab(HashMap<Directions, Room> adjacentRooms) {
+        super(adjacentRooms);
+    }
+
+    @Override
+    public boolean canEnterRoom() {return true;}
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    @Override
+    protected void startDialogue() {
+        //TODO: If player hasn't grabbed labcoat then die
+
+        System.out.println("Options:\n(A): Go north to the unknown");
+        System.out.println("(B): Go east towards the active camera");
+        System.out.println("(C): Go west to the admin office");
+        System.out.println("(D): Search the room");
+
+        char response = getOptionFromUser();
+        HashMap<Directions, Room> adjacentRooms = getAdjacentRooms();
+
+        switch (response) {
+            case 'A' -> {
+                System.out.println("You go north.");
+                Room northRoom = adjacentRooms.get(Directions.NORTH);
+                northRoom.enter();
+            }
+            case 'B' -> {
+                System.out.println("You go east.");
+                Room eastRoom = adjacentRooms.get(Directions.EAST);
+                eastRoom.enter();
+            }
+            case 'C' -> {
+                System.out.println("You go west.");
+                Room westRoom = adjacentRooms.get(Directions.WEST);
+                westRoom.enter();
+            }
+            case 'D' -> {
+                System.out.println("You search the room and find nothing.");
+            }
+            default -> {
+                System.out.println("Invalid option.");
+                startDialogue();
+            }
+        }
+    }
+}

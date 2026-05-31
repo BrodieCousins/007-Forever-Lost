@@ -1,7 +1,7 @@
 package com.foreverlost.main;
 
 import com.foreverlost.enums.Directions;
-import com.foreverlost.rooms.LockerRoomSouth;
+import com.foreverlost.rooms.Room;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -16,6 +16,7 @@ import java.util.HashMap;
  */
 public class Map {
     private Room[][] map;
+    private boolean cameraActive = true;
 
     public Map() {
         this.newMap();
@@ -98,6 +99,14 @@ public class Map {
         }
 
         return new int[]{row, column};
+    }
+
+    /**
+     * This function allows rooms to understand whether the cameras are on or not, to change dialogue and results
+     * @return boolean
+     */
+    public boolean isCameraActive() {
+        return cameraActive;
     }
 
 }
