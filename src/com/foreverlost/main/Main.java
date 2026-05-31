@@ -10,10 +10,14 @@ import java.util.HashMap;
  */
 public class Main {
 
+    /**
+     * This just creates the map and then calls the startRoom enter method to begin the game
+     * @param args
+     */
     public static void main(String[] args) {
-        System.out.println("Hello World!");
         Map map = new Map();
         Animations.printDoubleOSevenArt();
-        Animations.printLicenceToKill();
+
+        map.getStartRoom().enter();
     }
 }

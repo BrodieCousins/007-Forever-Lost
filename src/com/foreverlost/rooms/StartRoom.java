@@ -3,7 +3,6 @@ package com.foreverlost.rooms;
 import com.foreverlost.enums.Directions;
 
 import java.util.HashMap;
-import java.util.Scanner;
 
 /**
  * This is the room the player spawns in. They have a Locker Room to the East, and a ScientistsLab to the North
@@ -11,13 +10,17 @@ import java.util.Scanner;
  */
 public class StartRoom extends Room {
     private final String name = "Start Room";
-    private final String description = " Directly in front of you see a set of double doors with a small glass window " +
-            "embedded into them. You can see people in white coats moving around hurriedly as well as hear faint voices " +
-            "emanating from the gap between the floor and the doors. To your right is another pair of the same doors " +
-            "yet there is no movement through the window, and no sound emanates from them either. A sign above the " +
-            "doors reads 'Locker Room'";
+    private final String description = """
+            Directly in front of you see a set of double doors with a small glass window
+            embedded into them. You can see people in white coats moving around hurriedly
+            as well as hear faint voices emanating from the gap between the floor and the doors.
+            
+            To your right is another pair of the same doors yet there is no movement through
+            the window, and no sound emanates from them either. A sign above the doors reads
+            'Locker Room'.
+            """;
 
-    StartRoom(HashMap<Directions, Room> adjacentRooms) {
+    public StartRoom(HashMap<Directions, Room> adjacentRooms) {
         super(adjacentRooms);
     }
 
@@ -44,21 +47,16 @@ public class StartRoom extends Room {
      */
     @Override
     protected void startDialogue() {
-        System.out.println("Options:\n(A): Go north to the Scientists Lab");
-        System.out.println("(B): Go east through the locker room doors");
+        System.out.println("Options:\n(A): " + getGoDirectionLabel(Directions.NORTH));
+        System.out.println("(B): " + getGoDirectionLabel(Directions.EAST));
         System.out.println("(C): Search the room");
 
         // Gather input
         char response = getOptionFromUser();
-        HashMap<Directions, Room> adjacentRooms = getAdjacentRooms();
 
         switch (response) {
-            case 'A' -> {
-                adjacentRooms.get(Directions.NORTH).enter();
-            }
-            case 'B' -> {
-                adjacentRooms.get(Directions.EAST).enter();
-            }
+            case 'A' -> tryEnterAdjacentRoom(Directions.NORTH);
+            case 'B' -> tryEnterAdjacentRoom(Directions.EAST);
             case 'C' -> {
                 System.out.println("You search the room and find nothing.");
                 startDialogue(); // Restart the dialogue

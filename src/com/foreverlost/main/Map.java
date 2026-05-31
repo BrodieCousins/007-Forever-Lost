@@ -1,30 +1,113 @@
 package com.foreverlost.main;
 
 import com.foreverlost.enums.Directions;
-import com.foreverlost.rooms.Room;
+import com.foreverlost.rooms.*;
 
-import java.util.Arrays;
 import java.util.HashMap;
 
 /**
  * com.foreverlost.main.Map Class
- * Houses methods for:
- * <ul>
- *      Information about the current com.foreverlost.main.Map
- *      Creating a new map
- * </ul>
+ *
+ * My little text rendition of the map layout lol
+ * (0,0) LockerRoomNorth       (0,1) SecurityHallwayIntersection  (0,2) UtilityRoomHallway  (0,3) UtilityRoom
+ * (1,0) SecurityRoom         (1,1) SecurityRoomHallway          (1,2) ReactorCoreHallway  (1,3) ReactorCoreRoom
+ * (2,0) AdminRoom            (2,1) ScientistLab                  (2,2) ScientistLabEastHallway (2,3) ServerRoom
+ * (3,0) null                 (3,1) StartRoom                     (3,2) LockerRoomSouth     (3,3) LHallway
+ *
+ * This class handles everything about the map, including the creation of rooms & linking adjacent rooms
  */
 public class Map {
     private Room[][] map;
     private boolean cameraActive = true;
+    private StartRoom startRoom;
+    private final Player player = new Player();
 
+    /**
+     * Constructor for this class.
+     * Sets the player and map to current fields of this class, then calls the newMap method to create the map.
+     */
     public Map() {
+        Room.setPlayer(this.player);
+        Room.setMap(this);
         this.newMap();
     }
 
+    /**
+     * Getter method for the player field
+     * @return player
+     */
+    public Player getPlayer() {
+        return player;
+    }
+
+    /**
+     * Creates the map, fills the map 2d array with rooms. Uses an empty hashmap initially to store adjacent rooms
+     * before linking the rooms based on their grid neighbours.
+     */
     private void newMap() {
-        this.map = new Room[][]{};
-        System.out.println(Arrays.deepToString(this.map));
+        this.map = new Room[4][4];
+
+        map[0][0] = new LockerRoomNorth(new HashMap<>());
+        map[0][1] = new SecurityHallwayIntersection(new HashMap<>());
+        map[0][2] = new UtilityRoomHallway(new HashMap<>());
+        map[0][3] = new UtilityRoom(new HashMap<>());
+
+        map[1][0] = new SecurityRoom(new HashMap<>());
+        map[1][1] = new SecurityRoomHallway(new HashMap<>());
+        map[1][2] = new ReactorCoreHallway(new HashMap<>());
+        map[1][3] = new ReactorCoreRoom(new HashMap<>());
+
+        map[2][0] = new AdminRoom(new HashMap<>());
+        map[2][1] = new ScientistLab(new HashMap<>());
+        map[2][2] = new ScientistLabEastHallway(new HashMap<>());
+        map[2][3] = new ServerRoom(new HashMap<>());
+
+        map[3][1] = new StartRoom(new HashMap<>());
+        map[3][2] = new LockerRoomSouth(new HashMap<>());
+        map[3][3] = new LHallway(new HashMap<>());
+
+        setAdjacentNeighbours();
+
+        this.startRoom = (StartRoom) map[3][1];
+    }
+
+    /**
+     * Sets the adjacent neighbours for each room in the map. It calls the Room's linkAdjacentRooms method
+     * to adjust the instance's adjacentRooms HashMap.
+     * North will be one row above, East the index to the right in the array, West the index to the left in the array,
+     * South the row below
+     */
+    private void setAdjacentNeighbours() {
+        for (int row = 0; row < map.length; row++) {
+            for (int column = 0; column < map[row].length; column++) {
+                Room room = map[row][column];
+                // This null check is important, as grid (3,0) is null intentionally
+                if (room == null) {
+                    continue;
+                }
+
+                if (row > 0 && map[row - 1][column] != null) {
+                    room.linkAdjacentRoom(Directions.NORTH, map[row - 1][column]);
+                }
+                if (row < map.length - 1 && map[row + 1][column] != null) {
+                    room.linkAdjacentRoom(Directions.SOUTH, map[row + 1][column]);
+                }
+                if (column > 0 && map[row][column - 1] != null) {
+                    room.linkAdjacentRoom(Directions.WEST, map[row][column - 1]);
+                }
+                if (column < map[row].length - 1 && map[row][column + 1] != null) {
+                    room.linkAdjacentRoom(Directions.EAST, map[row][column + 1]);
+                }
+            }
+        }
+    }
+
+    /**
+     * Returns the start room of the game.
+     * @return startRoom
+     */
+    public StartRoom getStartRoom() {
+        return startRoom;
     }
 
     /**
@@ -34,7 +117,6 @@ public class Map {
      * @return A HashMap mapping the valid directions to the adjacent rooms
      */
     public HashMap<Directions, Room> getAdjacentRooms(Room room, Directions[] validDirections) {
-        // This is going to store the Direction as a Key, to return the Map as a value
         HashMap<Directions, Room> adjacentRooms = new HashMap<>();
 
         int[] index = getIndexByRoom(room);
@@ -44,19 +126,15 @@ public class Map {
         for (Directions direction : validDirections) {
             switch (direction) {
                 case Directions.NORTH:
-                    // add the room ABOVE this room
                     adjacentRooms.put(direction, this.map[row - 1][column]);
                     break;
                 case Directions.EAST:
-                    // add the room RIGHT of this room
                     adjacentRooms.put(direction, this.map[row][column + 1]);
                     break;
                 case Directions.SOUTH:
-                    // add the room BELOW this room
                     adjacentRooms.put(direction, this.map[row + 1][column]);
                     break;
                 case Directions.WEST:
-                    // add the room LEFT of this room
                     adjacentRooms.put(direction, this.map[row][column - 1]);
                     break;
                 default:
@@ -84,11 +162,9 @@ public class Map {
      * @return int[row, column] index
      */
     public int[] getIndexByRoom(Room room) {
-        // Giving them initial 0 values to avoid errors
         int row = 0;
         int column = 0;
 
-        // Get the index for the room in the map
         for (int i = 0; i < this.map.length; i++) {
             for (int j = 0; j < this.map[i].length; j++) {
                 if (this.map[i][j] == room) {
@@ -107,6 +183,14 @@ public class Map {
      */
     public boolean isCameraActive() {
         return cameraActive;
+    }
+
+    /**
+     * This method is called by the SecurityRoom when the Security Guard is taken out. There should be no reason
+     * to re-enable the cameras so this is a one time method.
+     */
+    public void disableCameras() {
+        this.cameraActive = false;
     }
 
 }
